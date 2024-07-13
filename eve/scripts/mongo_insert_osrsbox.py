@@ -35,12 +35,6 @@ class ConnectionProperties():
         self.port = os.getenv("MONGO_PORT")
         self.db_name = os.getenv("DATABASE_NAME")
 
-# Print environment variables to debug
-print(f"Project Username: {os.getenv('PROJECT_USERNAME')}")
-print(f"Project Password: {os.getenv('PROJECT_PASSWORD')}")
-print(f"Mongo Port: {os.getenv('MONGO_PORT')}")
-print(f"Database Name: {os.getenv('DATABASE_NAME')}")
-
 cp = ConnectionProperties()
 
 try:
