@@ -22,18 +22,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
 import itertools
-
+import os
 import pymongo
 from osrsbox import items_api
 from osrsbox import monsters_api
 from osrsbox import prayers_api
 
-from connection_properties import ConnectionProperties
+class ConnectionProperties():
+    def __init__(self):
+        self.username = os.getenv("PROJECT_USERNAME")
+        self.password = os.getenv("PROJECT_PASSWORD")
+        self.port = os.getenv("MONGO_PORT")
+        self.db_name = os.getenv("DATABASE_NAME")
+
+# Print environment variables to debug
+print(f"Project Username: {os.getenv('PROJECT_USERNAME')}")
+print(f"Project Password: {os.getenv('PROJECT_PASSWORD')}")
+print(f"Mongo Port: {os.getenv('MONGO_PORT')}")
+print(f"Database Name: {os.getenv('DATABASE_NAME')}")
+
 cp = ConnectionProperties()
 
-client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@osrsbox-api-mongo:{cp.port}/{cp.db_name}")
-db = client[cp.db_name]
-
+try:
+    client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@osrsbox-api-mongo:{cp.port}/{cp.db_name}")
+    db = client[cp.db_name]
+    print("MongoDB connection successful")
+except pymongo.errors.ConnectionError as e:
+    print(f"MongoDB connection error: {e}")
 
 def insert_data(db_type: str):
     print(f">>> Inserting {db_type} data...")
@@ -86,7 +101,6 @@ def insert_data(db_type: str):
         # Insert into MongoDB
         collection = db[db_type]
         collection.insert_many(to_insert)
-
 
 if __name__ == "__main__":
     # Loop three database types
