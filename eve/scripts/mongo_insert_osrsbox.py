@@ -61,7 +61,7 @@ def insert_data(db_type: str):
 
     # Remove all entries in the collection
     collection = db[db_type]
-    collection.remove()
+    collection.delete_many({})
 
     for db_entries in itertools.zip_longest(*[iter(all_entries)] * 50):
         # Remove None entries from the list
