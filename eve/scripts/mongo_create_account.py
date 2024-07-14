@@ -24,16 +24,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import base64
 import hashlib
 import getpass
+import os
 import secrets
-
 import pymongo
 
-from connection_properties import ConnectionProperties
+
+class ConnectionProperties():
+    def __init__(self):
+        self.username = os.getenv("PROJECT_USERNAME")
+        self.password = os.getenv("PROJECT_PASSWORD")
+        self.port = os.getenv("MONGO_PORT")
+        self.db_name = os.getenv("DATABASE_NAME")
+
+
 cp = ConnectionProperties()
 
-# Initialize MongoDB connection
-client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@osrsbox-api-mongo:{cp.port}/{cp.db_name}")
-db = client[cp.db_name]
+try:
+    client = pymongo.MongoClient(f"mongodb://{cp.username}:{cp.password}@osrsbox-api-mongo:{cp.port}/{cp.db_name}")
+    db = client[cp.db_name]
+    print("MongoDB connection successful")
+except pymongo.errors.ConnectionError as e:
+    print(f"MongoDB connection error: {e}")
 
 
 def main():
@@ -50,7 +61,7 @@ def main():
     salt = salt.encode("utf-8")
 
     # Hash new credentials using scrypt
-    password_hashed = hashlib.scrypt(password, salt=salt, n=2**14, r=8, p=1)
+    password_hashed = hashlib.scrypt(password, salt=salt, n=2 ** 14, r=8, p=1)
     password_base64 = base64.b64encode(password_hashed)
     password_base64 = password_base64.decode()
 
