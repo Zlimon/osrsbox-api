@@ -28,12 +28,14 @@ from osrsbox import items_api
 from osrsbox import monsters_api
 from osrsbox import prayers_api
 
+
 class ConnectionProperties():
     def __init__(self):
         self.username = os.getenv("PROJECT_USERNAME")
         self.password = os.getenv("PROJECT_PASSWORD")
         self.port = os.getenv("MONGO_PORT")
         self.db_name = os.getenv("DATABASE_NAME")
+
 
 cp = ConnectionProperties()
 
@@ -43,6 +45,7 @@ try:
     print("MongoDB connection successful")
 except pymongo.errors.ConnectionError as e:
     print(f"MongoDB connection error: {e}")
+
 
 def insert_data(db_type: str):
     print(f">>> Inserting {db_type} data...")
@@ -81,7 +84,7 @@ def insert_data(db_type: str):
         bulk_entries.append(db_entries)
 
     for i, block in enumerate(bulk_entries):
-        print(f"  > Processed: {i*50}")
+        print(f"  > Processed: {i * 50}")
         to_insert = list()
         for entry in block:
             # Make a dictionary from the *Properties object
@@ -95,6 +98,7 @@ def insert_data(db_type: str):
         # Insert into MongoDB
         collection = db[db_type]
         collection.insert_many(to_insert)
+
 
 if __name__ == "__main__":
     # Loop three database types

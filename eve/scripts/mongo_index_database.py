@@ -22,8 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 """
 import os
-
 import pymongo
+
 
 class ConnectionProperties():
     def __init__(self):
@@ -31,6 +31,7 @@ class ConnectionProperties():
         self.password = os.getenv("PROJECT_PASSWORD")
         self.port = os.getenv("MONGO_PORT")
         self.db_name = os.getenv("DATABASE_NAME")
+
 
 cp = ConnectionProperties()
 
@@ -40,6 +41,7 @@ try:
     print("MongoDB connection successful")
 except pymongo.errors.ConnectionError as e:
     print(f"MongoDB connection error: {e}")
+
 
 def main():
     # Set names of collections to index
@@ -58,6 +60,7 @@ def main():
         collection.create_index("id")
         if collection_name in ["items", "monsters"]:
             collection.create_index([("name", pymongo.TEXT)], default_language="english")
+
 
 if __name__ == "__main__":
     main()
